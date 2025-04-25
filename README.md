@@ -13,10 +13,10 @@ cd VT-2025
 
 ### 2. Set Up a Virtual Environment
 
-Create a new Python virtual environment to keep dependencies organized:
+Create a new Python 3.11 virtual environment to keep dependencies organized:
 
 ```bash
-python -m venv .venv
+python3.11 -m venv .venv
 ```
 
 ### 3. Activate the Virtual Environment
