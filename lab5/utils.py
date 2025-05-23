@@ -96,12 +96,18 @@ def correspondences_between_keypoints(kp_a, kp_b, matches_ab):
 def Normalization(x):
 
     x = np.asarray(x)
-    x = x / x[2, :]
+    d, N = x.shape
+    x = x / x[d-1, :]
 
     m, s = np.mean(x, 1), np.std(x)
-    s = np.sqrt(2) / s
-
-    Tr = np.array([[s, 0, -s * m[0]], [0, s, -s * m[1]], [0, 0, 1]])
+    s = np.sqrt(d-1) / s
+    
+    if (d == 3):
+        Tr = np.array([[s, 0, -s * m[0]], [0, s, -s * m[1]], [0, 0, 1]])
+    elif (d == 4):
+        Tr = np.array([[s, 0, 0, -s * m[0]], [0, s, 0, -s * m[1]], [0, 0, s, -s * m[2]], [0, 0, 0, 1]])
+    else:
+        raise ValueError
 
     xt = Tr @ x
 
