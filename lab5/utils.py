@@ -227,7 +227,7 @@ def ransac_fundamental_matrix(points1, points2, th, min_iterations):
     return F, best_inliers
 
 
-def triangulate(x1, x2, P1, P2, imsize):
+def triangulate(x1, x2, P1, P2, nx, ny):
 
     # only one point
     if x1.ndim == 1:
@@ -240,9 +240,6 @@ def triangulate(x1, x2, P1, P2, imsize):
     # Normalization
     x1 = x1 / x1[2, :]
     x2 = x2 / x2[2, :]
-
-    nx = imsize[0]
-    ny = imsize[1]
 
     H = [[2 / nx, 0, -1], [0, 2 / ny, -1], [0, 0, 1]]
 
@@ -264,6 +261,9 @@ def triangulate(x1, x2, P1, P2, imsize):
 
         # NOTE: no need to unnormalize
         X[:, i] = Vt[-1, :]
+
+    # Fixed with feedback from lab3
+    X = X / X[3, :]
 
     return X
 
@@ -324,8 +324,7 @@ def camera_projection_matrix(F : np.ndarray,
     # We iterate over all 3 possible cameras (fixing the first one with R = I, t = 0)
     for P2i in Pc2:
 
-        Xi = triangulate(x1[:, 0], x2[:, 0], P1, P2i, [nx, ny])
-        Xi = Xi / Xi[3, :]
+        Xi = triangulate(x1[:, 0], x2[:, 0], P1, P2i, nx, ny)
 
         x1est = P1 @ Xi
         x2est = P2i @ Xi
